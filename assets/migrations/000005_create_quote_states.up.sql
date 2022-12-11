@@ -1,0 +1,10 @@
+-- create table if not exists quote_states
+-- (
+--     id    uuid not null primary key,
+--     value text not null
+-- );
+--
+-- insert into quote_states (id, value)
+-- values (gen_random_uuid(), 'pending'),
+--        (gen_random_uuid(), 'rejected'),
+--        (gen_random_uuid(), 'accepted');

@@ -1,0 +1,22 @@
+{{define "subject"}}OTP for verification{{end}}
+
+{{define "plainBody"}}
+Hi {{.UserName}},
+
+Otp for {{.ApplicationName}} is {{.OTP}}
+
+{{end}}
+
+{{define "htmlBody"}}
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<p>Hi {{.UserName}},</p>
+<p>Otp for {{.ApplicationName}} is {{.OTP}}</p>
+</body>
+</html>
+{{end}}

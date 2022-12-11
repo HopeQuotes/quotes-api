@@ -1,0 +1,125 @@
+### status
+GET http://localhost:4444/v1/status
+Content-Type: application/json
+
+
+### create
+POST http://localhost:4444/v1/register
+Content-Type: application/json
+
+{
+  "email": "javlonrahimov1212@gmail.com",
+  "password": "pa55word12",
+  "name": "Javlon"
+}
+
+
+### verify
+POST http://localhost:4444/v1/verify
+Content-Type: application/json
+
+{
+  "email": "javlonrahimov1212@gmail.com",
+  "otp": "3704"
+}
+
+### login
+POST http://localhost:4444/v1/login
+Content-Type: application/json
+
+{
+  "email": "javlonrahimov1212@gmail.com",
+  "password": "pa55word12"
+}
+
+### Get user quotes
+GET https://localhost:4444/quote/69359037-9599-48e7-b8f2-48393c019135?page_size=30
+
+### Get quote states
+GET https://localhost:4444/quote/states
+
+
+### Create Quote
+POST http://localhost:4444/v1/quote
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
+
+{
+  "author": "test",
+  "text": "This is a sample quote",
+  "hashtagIDs": [
+    "65114f7b-d0f8-4ad1-8356-b04ae77b7c98"
+  ],
+  "photoID": "87157f39-e4ea-4d05-92ca-08913f9fceaa"
+}
+
+### get quotes
+GET http://localhost:4444/v1/quotes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
+
+### create hashtag
+POST http://localhost:4444/v1/hashtag
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
+
+{
+  "value": "motivation"
+}
+
+### get hashtags
+GET http://localhost:4444/v1/hashtags?page=1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
+
+### get quote hashtags
+GET http://localhost:4444/v1/hashtags/59dc414b-9674-4065-a2bd-f38342214227
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
+
+### get photos
+GET http://localhost:4444/v1/photos
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
+
+
+### get states
+GET http://localhost:4444/v1/quote/states
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
+
+### create state
+POST http://localhost:4444/v1/quote/state
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
+
+{
+  "value": "test",
+  "isDefault": true
+}
+
+
+### set default quote state
+PATCH http://localhost:4444/v1/quote/state
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
+
+{
+  "id": "fe3c084f-ab1a-4eb7-97e6-721727b4e769"
+
+}
+
+### delete quote state
+DELETE http://localhost:4444/v1/quote/state/e0af7775-142e-4176-af88-30a8b587aafd
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
+
+### set quote state
+PATCH http://localhost:4444/v1/quote/set-state
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
+
+{
+  "id": "759e9586-df1d-42eb-9797-7017886495b8",
+  "stateId": "503fc0f1-6ee0-44d6-bc99-ef140ca3678e"
+}
