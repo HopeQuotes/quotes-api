@@ -369,7 +369,7 @@ func (db *DB) IsExistsWithThisState(quoteStateID uuid.UUID) bool {
 	defer cancel()
 
 	query :=
-		`select id from quotes where state = $1`
+		`select exists (select id from quotes where state = $1)`
 
 	var exists bool
 

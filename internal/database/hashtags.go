@@ -63,7 +63,7 @@ func (db *DB) IsQuoteExistsWithThisHashtag(hashtagID uuid.UUID) bool {
 	defer cancel()
 
 	query :=
-		`select id from quote_hashtags where hashtag_id = $1`
+		`select exists (select id from quote_hashtags where hashtag_id = $1)`
 
 	var exists bool
 

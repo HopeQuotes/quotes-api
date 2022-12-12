@@ -48,9 +48,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0N
   "author": "test",
   "text": "This is a sample quote",
   "hashtagIDs": [
-    "65114f7b-d0f8-4ad1-8356-b04ae77b7c98"
+    "5aa15f1f-12d8-4924-80e8-267fefceca97"
   ],
-  "photoID": "87157f39-e4ea-4d05-92ca-08913f9fceaa"
+  "photoID": "ef8abf87-2e2e-45e8-8bd2-22e2330e225b"
 }
 
 ### get quotes
@@ -120,6 +120,6 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
 
 {
-  "id": "759e9586-df1d-42eb-9797-7017886495b8",
-  "stateId": "503fc0f1-6ee0-44d6-bc99-ef140ca3678e"
+  "id": "985aa03e-41f0-4356-80fa-229846b72dc4",
+  "stateId": "8847de4f-73f3-4d47-902b-a9c162104533"
 }

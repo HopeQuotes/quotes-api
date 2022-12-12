@@ -82,6 +82,7 @@ func (app *application) createQuote(w http.ResponseWriter, r *http.Request) {
 			ID:        quote.State.ID,
 			Value:     quote.State.Value,
 			IdDefault: quote.State.IsDefault,
+			Color:     quote.State.Color,
 		},
 		Author:    quote.Author,
 		Text:      quote.Text,
