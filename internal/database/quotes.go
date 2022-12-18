@@ -233,7 +233,7 @@ func (db *DB) GetUserQuotes(userID uuid.UUID, author string, text string, state 
 	defer rows.Close()
 
 	totalRecords := 0
-	var quotes []Quote
+	quotes := make([]Quote, 0)
 
 	for rows.Next() {
 		quote := Quote{Photo: &Photo{}}
@@ -280,7 +280,7 @@ func (db *DB) GetUserQuotes(userID uuid.UUID, author string, text string, state 
 	return quotes, metadata, nil
 }
 
-func (db *DB) GetQuotes(author string, text string, filters f.Filters) ([]*Quote, f.Metadata, error) {
+func (db *DB) GetQuotes(author string, text string, filters f.Filters) ([]Quote, f.Metadata, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 	defer cancel()
 
@@ -306,7 +306,7 @@ func (db *DB) GetQuotes(author string, text string, filters f.Filters) ([]*Quote
 	defer rows.Close()
 
 	totalRecords := 0
-	quotes := []*Quote{}
+	quotes := make([]Quote, 0)
 
 	for rows.Next() {
 		quote := Quote{Photo: &Photo{}}
@@ -341,7 +341,7 @@ func (db *DB) GetQuotes(author string, text string, filters f.Filters) ([]*Quote
 
 		quote.Hashtags = hashtags
 
-		quotes = append(quotes, &quote)
+		quotes = append(quotes, quote)
 	}
 
 	if err = rows.Err(); err != nil {

@@ -314,7 +314,7 @@ func (app *application) getUserQuotes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var quotesResponse []QuoteResponse
+	quotesResponse := make([]QuoteResponse, 0)
 	for _, quote := range quotes {
 		var hashtags []HashtagResponse
 		for _, hashtag := range quote.Hashtags {
@@ -379,7 +379,7 @@ func (app *application) getQuotes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var quotesResponse []QuoteResponse
+	quotesResponse := make([]QuoteResponse, 0)
 	for _, quote := range quotes {
 		var hashtags []HashtagResponse
 		for _, hashtag := range quote.Hashtags {
