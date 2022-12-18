@@ -59,7 +59,7 @@ func (app *application) createQuote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if slices.Contains(app.config.Sudoers, user.Email) {
+	if !slices.Contains(app.config.Sudoers, user.Email) {
 		input.StateID = nil
 	}
 
