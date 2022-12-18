@@ -36,8 +36,8 @@ Content-Type: application/json
 GET https://localhost:4444/quote/69359037-9599-48e7-b8f2-48393c019135?page_size=30
 
 ### Get quote states
-GET https://localhost:4444/quote/states
-
+GET http://localhost:4444/v1/quote/states
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0Iiwic3ViIjoiNTQ3NDkwZDQtNzNjOS00ODU1LWJhNDItOThkYTA5MTA1NDgwIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjQ0NDQiXSwiZXhwIjoxNjcxMzY2ODE5Ljg3OTY2NjgsIm5iZiI6MTY3MDc2MjAxOS44Nzk2ODQ0LCJpYXQiOjE2NzA3NjIwMTkuODc5NjgzNX0.aMcPS-hTJMABlvnj0uFUn9TpZ3Efznv3wcSjcbFaSdc
 
 ### Create Quote
 POST http://localhost:4444/v1/quote
@@ -50,7 +50,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0N
   "hashtagIDs": [
     "5aa15f1f-12d8-4924-80e8-267fefceca97"
   ],
-  "photoID": "ef8abf87-2e2e-45e8-8bd2-22e2330e225b"
+  "photoID": "ef8abf87-2e2e-45e8-8bd2-22e2330e225b",
+  "stateID": "4356ff94-cdd6-4412-872f-2b72d0f3520c"
 }
 
 ### get quotes
@@ -106,7 +107,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0N
 
 {
   "id": "fe3c084f-ab1a-4eb7-97e6-721727b4e769"
-
 }
 
 ### delete quote state

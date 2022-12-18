@@ -19,16 +19,28 @@ type Quote struct {
 	Text      string     `db:"text"`
 	State     QuoteState `db:"-"`
 	Photo     *Photo     `db:"-"`
-	Hashtags  []*Hashtag `db:"-"`
+	Hashtags  []Hashtag  `db:"-"`
 }
 
-func (db *DB) InsertQuote(author, text string, userID, photoID uuid.UUID, hashtagIDs []uuid.UUID) (*Quote, error) {
+func (db *DB) InsertQuote(author, text string, userID, photoID uuid.UUID, hashtagIDs []uuid.UUID, stateID *uuid.UUID) (*Quote, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 	defer cancel()
 
 	state, err := db.getDefaultQuoteState()
 	if err != nil && state != nil {
 		return nil, err
+	}
+
+	if stateID != nil {
+		state, err = db.getQuoteStateById(*stateID)
+		if err != nil {
+			switch {
+			case errors.Is(err, sql.ErrNoRows):
+				return nil, ErrRecordNotFound
+			default:
+				return nil, err
+			}
+		}
 	}
 
 	photo, err := db.GetPhotoById(photoID)
@@ -193,12 +205,12 @@ func (db *DB) GetQuoteById(id uuid.UUID) (*Quote, error) {
 	return &quote, nil
 }
 
-func (db *DB) GetUserQuotes(userID uuid.UUID, author string, text string, state uuid.UUID, filters f.Filters) ([]*Quote, f.Metadata, error) {
+func (db *DB) GetUserQuotes(userID uuid.UUID, author string, text string, state uuid.UUID, filters f.Filters) ([]Quote, f.Metadata, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 	defer cancel()
 
 	query := fmt.Sprintf(`
-		select count(*) over(), q.id, q.created_at, q.updated_at, q.created_by, q.author, text, s.id, s.value, s.is_default, s.color, p.id, p.url, p.color, p.blur_hash, p.author
+		select count(*) over(), q.id, q.created_at, q.updated_at, q.created_by, q.author, text, s.id, s.value, s.is_default, s.color, s.is_public, p.id, p.url, p.color, p.blur_hash, p.author
 		from quotes q
 		inner join quote_states s
 		on q.state = s.id
@@ -221,7 +233,7 @@ func (db *DB) GetUserQuotes(userID uuid.UUID, author string, text string, state 
 	defer rows.Close()
 
 	totalRecords := 0
-	quotes := []*Quote{}
+	var quotes []Quote
 
 	for rows.Next() {
 		quote := Quote{Photo: &Photo{}}
@@ -238,6 +250,7 @@ func (db *DB) GetUserQuotes(userID uuid.UUID, author string, text string, state 
 			&quote.State.Value,
 			&quote.State.IsDefault,
 			&quote.State.Color,
+			&quote.State.IsPublic,
 			&quote.Photo.ID,
 			&quote.Photo.Url,
 			&quote.Photo.Color,
@@ -255,7 +268,7 @@ func (db *DB) GetUserQuotes(userID uuid.UUID, author string, text string, state 
 
 		quote.Hashtags = hashtags
 
-		quotes = append(quotes, &quote)
+		quotes = append(quotes, quote)
 	}
 
 	if err = rows.Err(); err != nil {
@@ -272,10 +285,10 @@ func (db *DB) GetQuotes(author string, text string, filters f.Filters) ([]*Quote
 	defer cancel()
 
 	query := fmt.Sprintf(`
-		select count(*) over(), q.id, q.created_at, q.updated_at, q.created_by, q.author, text, s.id, s.value, s.is_default, s.color, p.id, p.url, p.color, p.blur_hash, p.author
+		select count(*) over(), q.id, q.created_at, q.updated_at, q.created_by, q.author, text, s.id, s.value, s.is_default, s.color, s.is_public, p.id, p.url, p.color, p.blur_hash, p.author
 		from quotes q
 		inner join quote_states s
-		on q.state = s.id
+		on q.state = s.id and s.is_public=true
 		inner join photos p 
 		on q.photo_id = p.id
 		where (to_tsvector('simple', q.author) @@ plainto_tsquery('simple', $1) or $1 = '')
@@ -310,6 +323,7 @@ func (db *DB) GetQuotes(author string, text string, filters f.Filters) ([]*Quote
 			&quote.State.Value,
 			&quote.State.IsDefault,
 			&quote.State.Color,
+			&quote.State.IsPublic,
 			&quote.Photo.ID,
 			&quote.Photo.Url,
 			&quote.Photo.Color,

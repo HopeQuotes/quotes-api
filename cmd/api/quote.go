@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/alexedwards/flow"
 	"github.com/google/uuid"
+	"golang.org/x/exp/slices"
 	"javlonrahimov/quotes-api/internal/database"
 	"javlonrahimov/quotes-api/internal/filters"
 	"javlonrahimov/quotes-api/internal/request"
@@ -31,6 +32,7 @@ func (app *application) createQuote(w http.ResponseWriter, r *http.Request) {
 		Text       *string             `json:"text,omitempty"`
 		PhotoID    *uuid.UUID          `json:"photoID,omitempty"`
 		HashtagIDs []uuid.UUID         `json:"hashtagIDs,omitempty"`
+		StateID    *uuid.UUID          `json:"stateID,omitempty"`
 		Validator  validator.Validator `json:"-"`
 	}
 
@@ -42,7 +44,7 @@ func (app *application) createQuote(w http.ResponseWriter, r *http.Request) {
 
 	input.Validator.CheckField(input.Author != nil && len(*input.Author) > 2, "author", "invalid author name")
 	input.Validator.CheckField(input.Text != nil && len(*input.Text) > 10, "text", "min length must be at least 10 characters long")
-	input.Validator.CheckField(len(input.HashtagIDs) != 0, "hashtagIDs", "add at least one hashtag")
+	input.Validator.CheckField(input.HashtagIDs != nil && len(input.HashtagIDs) != 0, "hashtagIDs", "add at least one hashtag")
 
 	input.Validator.CheckField(input.PhotoID != nil, "photoID", "required field")
 
@@ -57,7 +59,11 @@ func (app *application) createQuote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	quote, err := app.db.InsertQuote(*input.Author, *input.Text, user.ID, *input.PhotoID, input.HashtagIDs)
+	if slices.Contains(app.config.Sudoers, user.Email) {
+		input.StateID = nil
+	}
+
+	quote, err := app.db.InsertQuote(*input.Author, *input.Text, user.ID, *input.PhotoID, input.HashtagIDs, input.StateID)
 	if err != nil {
 		switch {
 		case errors.Is(err, database.ErrRecordNotFound):
@@ -68,7 +74,7 @@ func (app *application) createQuote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hashtags := []HashtagResponse{}
+	var hashtags []HashtagResponse
 	for _, hashtag := range quote.Hashtags {
 		hashtags = append(hashtags, HashtagResponse{
 			ID:    hashtag.ID,
@@ -83,6 +89,7 @@ func (app *application) createQuote(w http.ResponseWriter, r *http.Request) {
 			Value:     quote.State.Value,
 			IdDefault: quote.State.IsDefault,
 			Color:     quote.State.Color,
+			IsPublic:  quote.State.IsPublic,
 		},
 		Author:    quote.Author,
 		Text:      quote.Text,
@@ -181,6 +188,7 @@ func (app *application) updateQuote(w http.ResponseWriter, r *http.Request) {
 			ID:        quote.State.ID,
 			Value:     quote.State.Value,
 			IdDefault: quote.State.IsDefault,
+			IsPublic:  quote.State.IsPublic,
 		},
 		Author:    quote.Author,
 		Text:      quote.Text,
@@ -222,7 +230,7 @@ func (app *application) getQuoteById(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	hashtags := []HashtagResponse{}
+	var hashtags []HashtagResponse
 	for _, hashtag := range quote.Hashtags {
 		hashtags = append(hashtags, HashtagResponse{
 			ID:    hashtag.ID,
@@ -237,6 +245,7 @@ func (app *application) getQuoteById(w http.ResponseWriter, r *http.Request) {
 			Value:     quote.State.Value,
 			IdDefault: quote.State.IsDefault,
 			Color:     quote.State.Color,
+			IsPublic:  quote.State.IsPublic,
 		},
 		Author:    quote.Author,
 		Text:      quote.Text,
@@ -305,9 +314,9 @@ func (app *application) getUserQuotes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	quotesResponse := []QuoteResponse{}
+	var quotesResponse []QuoteResponse
 	for _, quote := range quotes {
-		hashtags := []HashtagResponse{}
+		var hashtags []HashtagResponse
 		for _, hashtag := range quote.Hashtags {
 			hashtags = append(hashtags, HashtagResponse{
 				ID:    hashtag.ID,
@@ -321,6 +330,7 @@ func (app *application) getUserQuotes(w http.ResponseWriter, r *http.Request) {
 				Value:     quote.State.Value,
 				IdDefault: quote.State.IsDefault,
 				Color:     quote.State.Color,
+				IsPublic:  quote.State.IsPublic,
 			},
 			Author:    quote.Author,
 			Text:      quote.Text,
@@ -369,9 +379,9 @@ func (app *application) getQuotes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	quotesResponse := []QuoteResponse{}
+	var quotesResponse []QuoteResponse
 	for _, quote := range quotes {
-		hashtags := []HashtagResponse{}
+		var hashtags []HashtagResponse
 		for _, hashtag := range quote.Hashtags {
 			hashtags = append(hashtags, HashtagResponse{
 				ID:    hashtag.ID,
@@ -385,6 +395,7 @@ func (app *application) getQuotes(w http.ResponseWriter, r *http.Request) {
 				Value:     quote.State.Value,
 				IdDefault: quote.State.IsDefault,
 				Color:     quote.State.Color,
+				IsPublic:  quote.State.IsPublic,
 			},
 			Author:    quote.Author,
 			Text:      quote.Text,

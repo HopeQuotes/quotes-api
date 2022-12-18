@@ -74,7 +74,7 @@ func (db *DB) IsQuoteExistsWithThisHashtag(hashtagID uuid.UUID) bool {
 	return exists
 }
 
-func (db *DB) GetQuoteHashtags(quoteID uuid.UUID) ([]*Hashtag, f.Metadata, error) {
+func (db *DB) GetQuoteHashtags(quoteID uuid.UUID) ([]Hashtag, f.Metadata, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 	defer cancel()
 
@@ -91,7 +91,7 @@ func (db *DB) GetQuoteHashtags(quoteID uuid.UUID) ([]*Hashtag, f.Metadata, error
 	}
 
 	totalRecords := 0
-	hashtags := []*Hashtag{}
+	hashtags := []Hashtag{}
 
 	for rows.Next() {
 		var hashtag Hashtag
@@ -104,7 +104,7 @@ func (db *DB) GetQuoteHashtags(quoteID uuid.UUID) ([]*Hashtag, f.Metadata, error
 			return nil, f.Metadata{}, err
 		}
 
-		hashtags = append(hashtags, &hashtag)
+		hashtags = append(hashtags, hashtag)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, f.Metadata{}, err
@@ -115,7 +115,7 @@ func (db *DB) GetQuoteHashtags(quoteID uuid.UUID) ([]*Hashtag, f.Metadata, error
 	return hashtags, metadata, nil
 }
 
-func (db *DB) GetHashtags(filters f.Filters) ([]*Hashtag, f.Metadata, error) {
+func (db *DB) GetHashtags(filters f.Filters) ([]Hashtag, f.Metadata, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 	defer cancel()
 
@@ -131,7 +131,7 @@ func (db *DB) GetHashtags(filters f.Filters) ([]*Hashtag, f.Metadata, error) {
 	}
 
 	totalRecords := 0
-	hashtags := []*Hashtag{}
+	hashtags := []Hashtag{}
 
 	for rows.Next() {
 		var hashtag Hashtag
@@ -144,7 +144,7 @@ func (db *DB) GetHashtags(filters f.Filters) ([]*Hashtag, f.Metadata, error) {
 			return nil, f.Metadata{}, err
 		}
 
-		hashtags = append(hashtags, &hashtag)
+		hashtags = append(hashtags, hashtag)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, f.Metadata{}, err

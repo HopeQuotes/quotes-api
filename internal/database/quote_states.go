@@ -2,6 +2,8 @@ package database
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"github.com/google/uuid"
 	f "javlonrahimov/quotes-api/internal/filters"
 )
@@ -11,6 +13,7 @@ type QuoteState struct {
 	Value     string    `db:"value"`
 	IsDefault bool      `db:"is_default"`
 	Color     string    `db:"color"`
+	IsPublic  bool      `db:"is_public"`
 }
 
 func (db *DB) InsertQuoteState(state *QuoteState) error {
@@ -18,11 +21,11 @@ func (db *DB) InsertQuoteState(state *QuoteState) error {
 	defer cancel()
 
 	query := `
-		insert into quote_states (id, value, is_default, color)
-		values ($1, $2, $3, $4)
+		insert into quote_states (id, value, is_default, color, is_public)
+		values ($1, $2, $3, $4, $5)
 		returning id`
 
-	args := []interface{}{uuid.New(), state.Value, false, state.Color}
+	args := []interface{}{uuid.New(), state.Value, false, state.Color, state.IsPublic}
 
 	err := db.QueryRowContext(ctx, query, args...).Scan(&state.ID)
 	if err != nil {
@@ -51,11 +54,11 @@ func (db *DB) getDefaultQuoteState() (*QuoteState, error) {
 	var state QuoteState
 
 	query := `
- 		select id, value, is_default, color
+ 		select id, value, is_default, color, is_public
 		from quote_states
 		where is_default = true`
 
-	err := db.QueryRowContext(ctx, query).Scan(&state.ID, &state.Value, &state.IsDefault, &state.Color)
+	err := db.QueryRowContext(ctx, query).Scan(&state.ID, &state.Value, &state.IsDefault, &state.Color, &state.IsPublic)
 	if err != nil {
 		return nil, err
 	}
@@ -130,12 +133,12 @@ func (db *DB) SetDefaultQuoteState(id uuid.UUID) error {
 	return nil
 }
 
-func (db *DB) GetAllQuoteStates() ([]*QuoteState, f.Metadata, error) {
+func (db *DB) GetAllQuoteStates() ([]QuoteState, f.Metadata, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 	defer cancel()
 
 	query := `
-		select count(*) over(), id, value, is_default, color
+		select count(*) over(), id, value, is_default, color, is_public
 		from quote_states`
 
 	rows, err := db.QueryxContext(ctx, query)
@@ -145,7 +148,7 @@ func (db *DB) GetAllQuoteStates() ([]*QuoteState, f.Metadata, error) {
 	defer rows.Close()
 
 	totalRecords := 0
-	quoteStates := []*QuoteState{}
+	var quoteStates []QuoteState
 
 	for rows.Next() {
 		var state QuoteState
@@ -156,13 +159,14 @@ func (db *DB) GetAllQuoteStates() ([]*QuoteState, f.Metadata, error) {
 			&state.Value,
 			&state.IsDefault,
 			&state.Color,
+			&state.IsPublic,
 		)
 
 		if err != nil {
 			return nil, f.Metadata{}, err
 		}
 
-		quoteStates = append(quoteStates, &state)
+		quoteStates = append(quoteStates, state)
 	}
 
 	if err = rows.Err(); err != nil {
@@ -172,4 +176,34 @@ func (db *DB) GetAllQuoteStates() ([]*QuoteState, f.Metadata, error) {
 	metadata := f.CalculateMetadata(totalRecords, 1, totalRecords)
 
 	return quoteStates, metadata, nil
+}
+
+func (db *DB) getQuoteStateById(stateID uuid.UUID) (*QuoteState, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+	defer cancel()
+
+	query := `
+		select id, value, is_default, color, is_public
+		from quote_states
+		where id=$1`
+
+	var quoteState QuoteState
+
+	err := db.QueryRowContext(ctx, query, stateID).Scan(
+		&quoteState.ID,
+		&quoteState.Value,
+		&quoteState.IsDefault,
+		&quoteState.Color,
+		&quoteState.IsPublic,
+	)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, ErrRecordNotFound
+		default:
+			return nil, err
+		}
+	}
+
+	return &quoteState, nil
 }

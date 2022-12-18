@@ -17,6 +17,7 @@ type StateResponse struct {
 	Value     string    `json:"value,omitempty"`
 	IdDefault bool      `json:"idDefault"`
 	Color     string    `json:"color"`
+	IsPublic  bool      `json:"isPublic"`
 }
 
 func (app *application) createQuoteState(w http.ResponseWriter, r *http.Request) {
@@ -24,6 +25,7 @@ func (app *application) createQuoteState(w http.ResponseWriter, r *http.Request)
 		Value     string              `json:"value"`
 		IsDefault bool                `json:"isDefault"`
 		Color     string              `json:"color"`
+		IsPublic  bool                `json:"isPublic"`
 		Validator validator.Validator `json:"-"`
 	}
 
@@ -42,7 +44,7 @@ func (app *application) createQuoteState(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	state := &database.QuoteState{Value: input.Value, IsDefault: input.IsDefault, Color: input.Color}
+	state := &database.QuoteState{Value: input.Value, IsDefault: input.IsDefault, Color: input.Color, IsPublic: input.IsPublic}
 
 	err = app.db.InsertQuoteState(state)
 	if err != nil {
@@ -135,12 +137,13 @@ func (app *application) getQuoteStates(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := util.Map(states, func(t *database.QuoteState) StateResponse {
+	data := util.Map(states, func(t database.QuoteState) StateResponse {
 		return StateResponse{
 			ID:        t.ID,
 			Value:     t.Value,
 			IdDefault: t.IsDefault,
 			Color:     t.Color,
+			IsPublic:  t.IsPublic,
 		}
 	})
 
