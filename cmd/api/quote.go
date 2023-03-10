@@ -174,7 +174,7 @@ func (app *application) updateQuote(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	hashtags := []HashtagResponse{}
+	var hashtags []HashtagResponse
 	for _, hashtag := range quote.Hashtags {
 		hashtags = append(hashtags, HashtagResponse{
 			ID:    hashtag.ID,
@@ -356,8 +356,9 @@ func (app *application) getUserQuotes(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) getQuotes(w http.ResponseWriter, r *http.Request) {
 	var input struct {
-		Text   string
-		Author string
+		Text    string
+		Author  string
+		StateId *uuid.UUID
 		filters.Filters
 		Validator validator.Validator
 	}
@@ -366,12 +367,26 @@ func (app *application) getQuotes(w http.ResponseWriter, r *http.Request) {
 	input.Author = request.ReadString(qs, "author", "")
 	input.Text = request.ReadString(qs, "text", "")
 
+	stateIDStr := request.ReadString(qs, "stateId", "")
+	if stateIDStr != "" {
+		data, err := uuid.Parse(stateIDStr)
+		if err != nil {
+			input.Validator.AddFieldError("stateId", "invalid state id")
+		}
+		input.StateId = &data
+	}
+
 	input.Filters.Page = request.ReadInt(qs, "page", 1, &input.Validator)
 	input.Filters.PageSize = request.ReadInt(qs, "page_size", 20, &input.Validator)
 
 	input.Filters.Sort = request.ReadString(qs, "sort", "created_at")
 
 	input.Filters.SortSafeList = []string{"text", "created_at", "-text", "-created_at"}
+
+	if input.Validator.HasErrors() {
+		app.failedValidation(w, r, input.Validator)
+		return
+	}
 
 	quotes, metadata, err := app.db.GetQuotes(input.Author, input.Text, input.Filters)
 	if err != nil {

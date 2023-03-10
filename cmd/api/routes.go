@@ -38,7 +38,7 @@ func (app *application) routes() http.Handler {
 		mux.HandleFunc(fmt.Sprintf("/v1/quote/:id|%s", uuidRegex), app.updateQuote, "PUT")
 		mux.HandleFunc(fmt.Sprintf("/v1/quote/:id|%s", uuidRegex), app.getQuoteById, "GET")
 		mux.HandleFunc(fmt.Sprintf("/v1/quote/:id|%s", uuidRegex), app.deleteQuoteById, "DELETE")
-		mux.HandleFunc(fmt.Sprintf("/v1/quote/:userId|%s", uuidRegex), app.getUserQuotes, "GET")
+		mux.HandleFunc(fmt.Sprintf("/v1/quotes/:userId|%s", uuidRegex), app.getUserQuotes, "GET")
 		mux.HandleFunc("/v1/quotes", app.getQuotes, "GET")
 
 		// quote states

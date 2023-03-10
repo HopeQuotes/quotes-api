@@ -5,9 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
 	f "javlonrahimov/quotes-api/internal/filters"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Quote struct {
@@ -284,7 +285,7 @@ func (db *DB) GetQuotes(author string, text string, filters f.Filters) ([]Quote,
 	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 	defer cancel()
 
-	query := fmt.Sprintf(`
+	query := `
 		select count(*) over(), q.id, q.created_at, q.updated_at, q.created_by, q.author, text, s.id, s.value, s.is_default, s.color, s.is_public, p.id, p.url, p.color, p.blur_hash, p.author
 		from quotes q
 		inner join quote_states s
@@ -293,10 +294,13 @@ func (db *DB) GetQuotes(author string, text string, filters f.Filters) ([]Quote,
 		on q.photo_id = p.id
 		where (to_tsvector('simple', q.author) @@ plainto_tsquery('simple', $1) or $1 = '')
 		and (to_tsvector('simple', q.text) @@ plainto_tsquery('simple', $2) or $2 = '')
-		order by q.%s %s, q.created_at asc
-		limit $3 offset $4`, filters.SortColumn(), filters.SortDirection())
+		order by case when $3 = 'text' then q.text end
+		         , case when $3 = 'created_at' then q.created_at end
+		limit $4 offset $5`
+	// q.%s %s, q.created_at as
+	// filters.SortColumn(), filters.SortDirection())
 
-	args := []interface{}{author, text, filters.Limit(), filters.Offset()}
+	args := []interface{}{author, text, filters.SortColumn(), filters.Limit(), filters.Offset()}
 
 	rows, err := db.QueryContext(ctx, query, args...)
 	if err != nil {
